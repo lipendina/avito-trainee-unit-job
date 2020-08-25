@@ -106,10 +106,10 @@ curl --header "Content-Type: application/json"
 
 ```
 curl --request GET  
-http://localhost:9000/balance/get?user_id=<USER_ID>
+"http://localhost:9000/balance/get?user_id=<USER_ID>&currency=USD"
 ```
 
-Ответ: текущий баланс пользователя или HTTP-код ошибки + описание ошибки.
+Ответ: текущий баланс пользователя в указанной валюте (по умолчанию в рублях) или HTTP-код ошибки + описание ошибки.
 
 ***Метод получения транзакций пользователя***
 
