@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  db:
+    container_name: psql
+    restart: always
+    image: psql
+    build:
+      context: postgres/
+    networks:
+      - default
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+  balance-microservice:
+    build: avito
+    depends_on:
+      - db
+    container_name: avito_trainee
+    restart: always
+    ports:
+      - "9000:9000"
+    networks:
+      - default
