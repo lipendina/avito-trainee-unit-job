@@ -1,10 +1,10 @@
 package storage
 
 import (
-	"../db"
+	"avito/db"
 	"context"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v4"
 )
 
 type BalanceStorageAPI interface {
@@ -15,12 +15,12 @@ type BalanceStorageAPI interface {
 }
 
 type balanceStorage struct {
-	db db.ConnDB
+	db *db.ConnDB
 	ctx context.Context
 }
 
 
-func NewBalanceStorageAPI(connDB db.ConnDB, ctx context.Context) BalanceStorageAPI {
+func NewBalanceStorageAPI(connDB *db.ConnDB, ctx context.Context) BalanceStorageAPI {
 	return &balanceStorage{
 		db: connDB,
 		ctx: ctx,
@@ -28,7 +28,7 @@ func NewBalanceStorageAPI(connDB db.ConnDB, ctx context.Context) BalanceStorageA
 }
 
 func (c *balanceStorage) BalanceIncrease(tx pgx.Tx, userID uuid.UUID, sum int64) error {
-	_, err := tx.Exec(c.ctx, "insert into balance (user_id, amount) values ($1, $2) on conflict (user_id) do update set amount = (select amount from balance where user_id = $1) + $2;", userID, sum)
+	_, err := tx.Exec(c.ctx,"insert into balance (user_id, amount) values ($1, $2) on conflict (user_id) do update set amount = (select amount from balance where user_id = $1) + $2;", userID, sum)
 	if err != nil {
 		return err
 	}
@@ -37,7 +37,7 @@ func (c *balanceStorage) BalanceIncrease(tx pgx.Tx, userID uuid.UUID, sum int64)
 }
 
 func (c *balanceStorage) BalanceDecrease(tx pgx.Tx, userID uuid.UUID, sum int64) error {
-	_, err := tx.Exec(c.ctx, "update balance set amount = (select amount from balance where user_id = $1) - $2 where user_id=$1;", userID, sum)
+	_, err := tx.Exec(c.ctx,"update balance set amount = (select amount from balance where user_id = $1) - $2 where user_id=$1;", userID, sum)
 	if err != nil {
 		return err
 	}

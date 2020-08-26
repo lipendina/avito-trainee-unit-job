@@ -1,8 +1,8 @@
 package service
 
 import (
-	"../dto"
-	"../storage"
+	"avito/dto"
+	"avito/storage"
 	"context"
 	"encoding/json"
 	"github.com/google/uuid"

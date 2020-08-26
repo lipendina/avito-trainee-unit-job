@@ -1,11 +1,11 @@
 package db
 
 import (
-	"../config"
+	"avito/config"
 	"context"
 	"fmt"
-	"github.com/jackc/pgx/pgxpool"
-	"log"
+	"github.com/jackc/pgx/v4/pgxpool"
+	"golang.org/x/xerrors"
 )
 
 type PgxSource interface {
@@ -17,21 +17,21 @@ type ConnDB struct {
 	ctx context.Context
 }
 
-func NewConnectToPG(dbConfig *config.DBConfig, ctx context.Context) ConnDB {
+func NewConnectToPG(dbConfig *config.DBConfig, ctx context.Context) (*ConnDB, error) {
 	poolConfig, err := pgxpool.ParseConfig(fmt.Sprintf("user=%s password=%s host=%s port=%d dbname=%s", dbConfig.User, dbConfig.Password, dbConfig.Host, dbConfig.Port, dbConfig.DBName))
 	if err != nil {
-		log.Fatalf("Cannot parse config", err)
+		return nil, xerrors.Errorf("Cannot parse config", err)
 	}
 	poolConfig.ConnConfig.RuntimeParams["standard_conforming_strings"] = "on";
 	poolConfig.ConnConfig.PreferSimpleProtocol = true
 
 	db, err := pgxpool.ConnectConfig(ctx, poolConfig)
 	if err != nil {
-		log.Fatalf("Unable to create connection pool: ", err)
+		return nil, xerrors.Errorf("Unable to create connection pool: %v", err)
 	}
 
-	return ConnDB{
-		DB: db,
+	return &ConnDB{
+		DB:  db,
 		ctx: ctx,
-	}
+	}, nil
 }

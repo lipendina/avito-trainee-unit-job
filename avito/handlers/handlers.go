@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"../dto"
-	"../service"
+	"avito/dto"
+	"avito/service"
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"

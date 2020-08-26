@@ -1,16 +1,16 @@
 package main
 
 import (
-	"./handlers"
-	"./storage"
-	"./service"
+	"avito/handlers"
+	"avito/storage"
+	"avito/service"
 	"context"
 	"fmt"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"./config"
-	"./db"
+	"avito/config"
+	"avito/db"
 )
 
 func main() {
@@ -22,7 +22,10 @@ func main() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	pgConn := db.NewConnectToPG(&applicationConfig.DB, ctx)
+	pgConn, err := db.NewConnectToPG(&applicationConfig.DB, ctx)
+	if err != nil {
+		log.Fatalf("Cannot connect to DB, reason: %v", err)
+	}
 
 	storageAPI := storage.NewStorageAPI(pgConn, ctx)
 	serviceAPI := service.NewServiceAPI(storageAPI)

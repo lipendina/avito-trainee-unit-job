@@ -1,7 +1,7 @@
 package service
 
 import (
-	"../storage"
+	"avito/storage"
 )
 
 type ServiceAPI interface {

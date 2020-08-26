@@ -15,6 +15,7 @@ services:
       - 5432:5432
   balance-microservice:
     build: avito
+#    build: avito/balance-service
     depends_on:
       - db
     container_name: avito_trainee

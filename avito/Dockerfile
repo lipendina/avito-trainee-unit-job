@@ -1,13 +1,16 @@
 FROM golang:1.13.8
 
+ENV GO111MODULE=on
+
 ADD . /avito
 WORKDIR /avito
 
-RUN go get github.com/google/uuid
-RUN go get github.com/gorilla/mux
-RUN go get github.com/jackc/pgx
-RUN go get github.com/jackc/pgx/pgxpool
-RUN go get golang.org/x/xerrors
-RUN go get gopkg.in/yaml.v2
+RUN go mod download
 
-CMD ["go", "run", "main.go"]
+WORKDIR /avito/balance-service
+RUN go build
+
+WORKDIR /avito
+CMD ["./balance-service/balance-service"]
+
+#CMD ["go", "run", "main.go"]

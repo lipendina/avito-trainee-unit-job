@@ -1,11 +1,11 @@
 package storage
 
 import (
-	"github.com/google/uuid"
-	"../db"
+	"avito/db"
+	"avito/dto"
 	"context"
-	"../dto"
-	"github.com/jackc/pgx"
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v4"
 )
 
 type TransactionStorageAPI interface {
@@ -14,11 +14,11 @@ type TransactionStorageAPI interface {
 }
 
 type transactionStorage struct {
-	db db.ConnDB
+	db *db.ConnDB
 	ctx context.Context
 }
 
-func NewTransactionStorageAPI(connDB db.ConnDB, ctx context.Context) TransactionStorageAPI {
+func NewTransactionStorageAPI(connDB *db.ConnDB, ctx context.Context) TransactionStorageAPI {
 	return &transactionStorage {
 		db: connDB,
 		ctx: ctx,
@@ -50,7 +50,7 @@ func (t *transactionStorage) GetTransactions(userID uuid.UUID, limit int, offset
 }
 
 func (t *transactionStorage) WriteTransaction(tx pgx.Tx, userID uuid.UUID, sum int64) error {
-	_, err := tx.Exec(t.ctx, "insert into \"transaction\" (user_id, change_balance) values ($1, $2);", userID, sum)
+	_, err := tx.Exec(t.ctx,"insert into \"transaction\" (user_id, change_balance) values ($1, $2);", userID, sum)
 	if err != nil {
 		return err
 	}

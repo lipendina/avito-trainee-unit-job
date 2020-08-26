@@ -1,8 +1,8 @@
 package service
 
 import (
-	"../dto"
-	"../storage"
+	"avito/dto"
+	"avito/storage"
 	"context"
 	"github.com/google/uuid"
 	"golang.org/x/xerrors"
